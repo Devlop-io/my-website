@@ -1,58 +1,56 @@
-## IntesarHusain.com — Portfolio
-### Goal
-Launch a V0 portfolio landing page that captures Intesar Husain’s story, showcases projects in an interactive Kanban board, enables lead capture via CRM integration, and offers a downloadable resume.
-V0 is story-first, fun, and human — V1 can expand into full About, Blog, Services, etc.
-### 30-second elevator pitch
-A bold, story-first personal site that showcases Intesar Husain’s journey as a creative builder, product thinker, and startup collaborator. Designed to be as playful and multidimensional as he is.
+# Masterplan — IntesarHusain.com Portfolio & Playground (V0)
 
-### Problem & mission
-Most personal sites feel sterile or resume-like. IntesarHusain.com aims to bring humanity and creativity front-and-center—making it effortless for startup teams, recruiters, and collaborators to *feel* who he is.
+## Project Goal
+Build a personal portfolio site that:
+- Helps startup recruiters, collaborators, and freelance clients quickly understand my story as a builder, product thinker, and creative leader.
+- Uses a **non-traditional portfolio display** via an interactive Kanban wall to show my projects as an evolving journey.
+- Feels **playful, bold, and human** while being fully functional on mobile and desktop.
+- Offers a downloadable resume.
+- V0 is story-first, fun, and human — V1 can expand into full About, Blog, Services, etc.
 
-### Target audience
-- Startup recruiters and hiring managers
-- Fellow indie hackers and builders
-- Freelance clients (CRM + marketing automation help)
+## Target Audience
+- Startup recruiters & hiring managers
+- Indie hackers, founders, entrepreneurs, product builders, and tech collaborators
+- Potential freelance clients seeking CRM + marketing automation expertise
 
-### Core Sections
-- **Homepage**: Animated hero, visual milestone timeline, testimonials snippet
-- **About**: Personal story, strengths, photos, and personality highlights
-- **Prjoects**: Tagged case studies with reflections and results
-- **Blog**: Startup insights, product lessons, learning journeys
-- **Freelance**: Services menu + inquiry form (phase two)
-- **Contact**: Friendly CTA, form, social links, Calendly embed
-- **CMS Admin**: Sanity-powered backend to manage posts, projects, services
+## Scope (V0)
+**In-scope:**
+- Homepage with the following sections
+    - **Hero**: animated headline & intro
+    - **Bio teaser**: short personal + professional snapshot
+    - **Timeline**: career highlights (scrollable)
+    - **Projects Kanban**: Interactive **Kanban wall** for portfolio display with columns: Ideas / In Progress / Launched, sticky notes open sidebar with details
+    - Progress bars on each Kanban card to show “journey” status
+    - **Lights Me Up**: passions, strengths grid
+    - **Testimonials**:  2–3 peer or manager quotes
+    - **CTA**: Contact form + optional Calendly
+    - **Resume Download**: tracked clicks
+    - **Footer**: minimal nav + socials
 
-### V0 Features (Extension of homepage from core features)
-- **Hero**: animated headline & intro
-- **Bio teaser**: short personal + professional snapshot
-- **Timeline**: career highlights (scrollable)
-- **Projects Kanban**: columns: Launched / In Progress / Ideas, sticky notes open sidebar with details
-- **Lights Me Up**: passions, strengths grid
-- **Testimonials**:  2–3 peer or manager quotes
-- **CTA**: Contact form + optional Calendly
 - **Resume Download**: tracked clicks
-- **Footer**: minimal nav + socials
+- Responsive layout (mobile-first)
+
+**Out-of-scope (V0):**
+- 3D experimental playground (will live on a subdomain later)
+- Blog functionality
+- CMS Admin: Sanity-powered backend to manage posts, projects, services
+- AI bot integration
 
 ### Content Management:
 - All copy in /content/*.md files for easy updates and AI builder compatibility
 
-### Integrations:
-- CRM (HubSpot) for form submissions
-- Analytics for resume downloads + form conversions
+## Success Criteria
+- Site loads in <2 seconds on desktop & mobile
+- Visitors can understand my work within 30 seconds
+- Kanban wall is functional & visually engaging
+- Contact form works without errors
 
 ### High-level tech stack
 - **Astro** – lightweight, fast, and ideal for content-rich static sites
 - **TypeScript + Tailwind CSS** – developer-friendly, consistent styling
 - **Framer Motion** – for scroll effects, fades, and playful animations
 - **Sanity.io** – intuitive CMS for managing content without code
-- **Netlify/Vercel** – simple, free, CI/CD-enabled deployment
-
-### Conceptual data model
-- **User (admin-only)**
-- **Project**: title, tags, summary, tools, outcome, reflections, images
-- **Blog Post**: title, category, body, summary, created date
-- **Service Offering**: title, description, category, portfolio links
-- **Testimonial**: quote, author, role, associated project
+- **Netlify** – simple, free, CI/CD-enabled deployment
 
 ### UI design principles
 - Follow **Steve Krug’s usability laws**: no mystery meat, scannable layout
@@ -60,34 +58,15 @@ Most personal sites feel sterile or resume-like. IntesarHusain.com aims to bring
 - Mobile-first, card-based layout with micro-interactions
 - Parallax + scroll reveals to keep visual interest high
 
-### Security & compliance notes
-- No auth required unless admin panel is private
-- Sanity manages content access securely via API tokens
-- Embed forms use secure providers (e.g., Tally, Typeform, or custom Netlify forms)
+## Timeline
+- **Week 1:** Finalize copy & design guidelines
+- **Week 2–3:** Development & integration
+- **Week 4:** Testing, polish, and launch
 
-### Phased roadmap
-**MVP (Now)**
-- Homepage, About, Projects, Contact
-- Blog (basic), CMS integration, deploy live
-
-**V1**
-- Full Blog functionality with categories, SEO, summaries
-- Freelance services page with case snippets
-- Testimonials with dynamic filtering
-
-**V2**
-- Ask-Me-Anything AI bot
-- Smart search (e.g., “Projects using HubSpot”)
-- AI-generated summaries for blog/projects
-
-### Risks & mitigations
+## Risks & Dependencies
+- Kanban wall interactivity may require custom animation work
+- Mobile layout must remain usable with horizontally scrollable columns
+- Content delivery must be in editable `.md` files
 - **Too much content upfront** → Start lean; add blog/posts gradually
 - **Performance lags from animations** → Use Framer Motion sparingly, test on mobile
 - **Scope creep on CMS** → Limit fields per content type; write strict schema early
-
-### Future expansion ideas
-- Interactive playgrounds (e.g., micro-tools or live demos)
-- Community Q&A or notes-style posts
-- Podcast or video integration
-- Newsletter with lead capture
-
