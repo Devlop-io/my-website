@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Intesar Husain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 1.5rem;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 4rem auto;
+            text-align: center;
+        }
+        
+        .login-form h2 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .error {
+            color: #e53e3e;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .admin-panel.show {
+            display: block;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+        }
+        
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+        
+        .tab-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .file-editor {
+            margin-top: 1rem;
+        }
+        
+        .file-editor textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+        
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .file-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .file-card h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .file-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .publish-btn {
+            background: #28a745;
+            margin-top: 1rem;
+        }
+        
+        .publish-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Portfolio Admin Panel</h1>
+    </div>
+    
+    <div class="container">
+        <!-- Login Form -->
+        <div class="login-form" id="loginForm">
+            <h2>Admin Access</h2>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn">Access Admin Panel</button>
+            </form>
+            <div class="error" id="error" style="display: none;"></div>
+        </div>
+        
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <div class="tabs">
+                <div class="tab active" data-tab="content">Content</div>
+                <div class="tab" data-tab="projects">Projects</div>
+                <div class="tab" data-tab="timeline">Timeline</div>
+                <div class="tab" data-tab="testimonials">Testimonials</div>
+            </div>
+            
+            <div class="tab-content">
+                <div class="tab-pane active" id="content">
+                    <h2>Content Management</h2>
+                    <div class="file-list">
+                        <div class="file-card">
+                            <h3>Hero Section</h3>
+                            <p>Edit the main headline and call-to-action text</p>
+                            <button class="btn" onclick="editFile('hero.md')">Edit hero.md</button>
+                        </div>
+                        <div class="file-card">
+                            <h3>About Section</h3>
+                            <p>Update your bio and professional summary</p>
+                            <button class="btn" onclick="editFile('about.md')">Edit about.md</button>
+                        </div>
+                        <div class="file-card">
+                            <h3>Passions</h3>
+                            <p>Update your interests and passions</p>
+                            <button class="btn" onclick="editFile('passions.md')">Edit passions.md</button>
+                        </div>
+                        <div class="file-card">
+                            <h3>Contact</h3>
+                            <p>Update contact information and form settings</p>
+                            <button class="btn" onclick="editFile('contact.md')">Edit contact.md</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane" id="projects">
+                    <h2>Project Management</h2>
+                    <div class="file-list">
+                        <div class="file-card">
+                            <h3>AI Writing Assistant</h3>
+                            <p>Edit project details and description</p>
+                            <button class="btn" onclick="editFile('projects/ai-writing-assistant.md')">Edit Project</button>
+                        </div>
+                        <div class="file-card">
+                            <h3>CRM Automation</h3>
+                            <p>Edit project details and description</p>
+                            <button class="btn" onclick="editFile('projects/crm-automation.md')">Edit Project</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane" id="timeline">
+                    <h2>Timeline Management</h2>
+                    <div class="file-list">
+                        <div class="file-card">
+                            <h3>Career Timeline</h3>
+                            <p>Edit timeline items and career milestones</p>
+                            <button class="btn" onclick="editFile('timeline.md')">Edit timeline.md</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane" id="testimonials">
+                    <h2>Testimonials Management</h2>
+                    <div class="file-list">
+                        <div class="file-card">
+                            <h3>Testimonials</h3>
+                            <p>Add and edit client feedback</p>
+                            <button class="btn" onclick="editFile('testimonials.md')">Edit testimonials.md</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn publish-btn" onclick="publishChanges()">Publish Changes to GitHub</button>
+        </div>
+        
+        <!-- File Editor Modal -->
+        <div id="fileEditor" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+                <h2 id="editorTitle">Edit File</h2>
+                <div class="file-editor">
+                    <textarea id="fileContent" placeholder="Enter your markdown content here..."></textarea>
+                </div>
+                <div style="margin-top: 1rem; text-align: right;">
+                    <button class="btn" onclick="saveFile()">Save</button>
+                    <button class="btn" onclick="closeEditor()" style="background: #6c757d; margin-left: 0.5rem;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFile = '';
+        
+        // Password authentication
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            if (password === 'Khulja sim sim') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('show');
+            } else {
+                document.getElementById('error').textContent = "You're dumb go check the code for the password";
+                document.getElementById('error').style.display = 'block';
+            }
+        });
+        
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // File editing
+        async function editFile(filename) {
+            currentFile = filename;
+            document.getElementById('editorTitle').textContent = `Editing ${filename}`;
+            
+            try {
+                const response = await fetch(`/api/content/${filename}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('fileContent').value = data.content;
+                } else {
+                    document.getElementById('fileContent').value = '';
+                }
+            } catch (error) {
+                document.getElementById('fileContent').value = '';
+            }
+            
+            document.getElementById('fileEditor').style.display = 'block';
+        }
+        
+        async function saveFile() {
+            const content = document.getElementById('fileContent').value;
+            
+            try {
+                const response = await fetch(`/api/content/${currentFile}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+                
+                if (response.ok) {
+                    alert('File saved successfully!');
+                    closeEditor();
+                } else {
+                    alert('Failed to save file');
+                }
+            } catch (error) {
+                alert('Error saving file');
+            }
+        }
+        
+        function closeEditor() {
+            document.getElementById('fileEditor').style.display = 'none';
+            currentFile = '';
+        }
+        
+        async function publishChanges() {
+            const message = prompt('Enter a commit message (optional):') || 'Update content via admin panel';
+            
+            try {
+                const response = await fetch('/api/publish', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                if (response.ok) {
+                    alert('Changes published successfully to GitHub!');
+                } else {
+                    alert('Failed to publish changes');
+                }
+            } catch (error) {
+                alert('Error publishing changes');
+            }
+        }
+    </script>
+</body>
+</html>
