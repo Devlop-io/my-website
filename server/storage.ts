@@ -1,11 +1,10 @@
-import { type User, type InsertUser, type Project, type InsertProject, type TimelineItem, type InsertTimelineItem, type Testimonial, type InsertTestimonial, type Contact, type InsertContact } from "@shared/schema";
+import { type User, type UpsertUser, type Project, type InsertProject, type TimelineItem, type InsertTimelineItem, type Testimonial, type InsertTestimonial, type Contact, type InsertContact } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { readMarkdownFile, readMarkdownDirectory, extractProjectId } from "./markdown-reader";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   getProjects(): Promise<Project[]>;
   getProject(id: string): Promise<Project | undefined>;
@@ -173,17 +172,26 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const existingUser = this.users.get(userData.id!);
+    if (existingUser) {
+      const updatedUser: User = { 
+        ...existingUser, 
+        ...userData, 
+        updatedAt: new Date() 
+      };
+      this.users.set(userData.id!, updatedUser);
+      return updatedUser;
+    } else {
+      const user: User = { 
+        ...userData, 
+        id: userData.id!,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.users.set(user.id, user);
+      return user;
+    }
   }
 
   async getProjects(): Promise<Project[]> {
@@ -265,8 +273,8 @@ export class MemStorage implements IStorage {
         fullDescription: html || "",
         status: data.status === "Launched" ? "launched" : 
                data.status === "In Progress" ? "in-progress" : "ideas",
-        progress: data.progress || 0,
-        technologies: data.tools || [],
+        progress: data.progress ?? 0,
+        technologies: data.tools ?? [],
         imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
         liveUrl: data.demo_link || null,
         githubUrl: data.github_link || null,
@@ -289,7 +297,7 @@ export class MemStorage implements IStorage {
       company: item.company,
       period: item.period,
       description: item.description,
-      skills: [],
+      skills: item.skills ?? [],
       order: index + 1,
       createdAt: new Date(),
     }));
@@ -307,7 +315,7 @@ export class MemStorage implements IStorage {
       role: testimonial.role,
       company: testimonial.company || null,
       quote: testimonial.quote,
-      imageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200",
+      imageUrl: testimonial.imageUrl ?? "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200",
       createdAt: new Date(),
     }));
   }
