@@ -5,10 +5,13 @@ import { insertContactSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Get all projects
+  // Get all projects (with option to use markdown source)
   app.get("/api/projects", async (req, res) => {
     try {
-      const projects = await storage.getProjects();
+      const useMarkdown = req.query.source === 'markdown';
+      const projects = useMarkdown ? 
+        await storage.getProjectsFromMarkdown() : 
+        await storage.getProjects();
       res.json(projects);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch projects" });
@@ -28,20 +31,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get timeline items
+  // Get timeline items (with option to use markdown source)
   app.get("/api/timeline", async (req, res) => {
     try {
-      const items = await storage.getTimelineItems();
+      const useMarkdown = req.query.source === 'markdown';
+      const items = useMarkdown ? 
+        await storage.getTimelineFromMarkdown() : 
+        await storage.getTimelineItems();
       res.json(items);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch timeline items" });
     }
   });
 
-  // Get testimonials
+  // Get testimonials (with option to use markdown source)
   app.get("/api/testimonials", async (req, res) => {
     try {
-      const testimonials = await storage.getTestimonials();
+      const useMarkdown = req.query.source === 'markdown';
+      const testimonials = useMarkdown ? 
+        await storage.getTestimonialsFromMarkdown() : 
+        await storage.getTestimonials();
       res.json(testimonials);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch testimonials" });
@@ -59,6 +68,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid form data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to submit contact form" });
+    }
+  });
+
+  // Get hero content
+  app.get("/api/content/hero", async (req, res) => {
+    try {
+      const content = await storage.getHeroContent();
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch hero content" });
+    }
+  });
+
+  // Get about content
+  app.get("/api/content/about", async (req, res) => {
+    try {
+      const content = await storage.getAboutContent();
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch about content" });
+    }
+  });
+
+  // Get passions content
+  app.get("/api/content/passions", async (req, res) => {
+    try {
+      const content = await storage.getPassionsContent();
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch passions content" });
+    }
+  });
+
+  // Get contact content
+  app.get("/api/content/contact", async (req, res) => {
+    try {
+      const content = await storage.getContactContent();
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch contact content" });
     }
   });
 

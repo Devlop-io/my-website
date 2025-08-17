@@ -1,5 +1,6 @@
 import { type User, type InsertUser, type Project, type InsertProject, type TimelineItem, type InsertTimelineItem, type Testimonial, type InsertTestimonial, type Contact, type InsertContact } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { readMarkdownFile, readMarkdownDirectory, extractProjectId } from "./markdown-reader";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -17,6 +18,15 @@ export interface IStorage {
   createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
   
   createContact(contact: InsertContact): Promise<Contact>;
+  
+  // Content methods for markdown-based content
+  getHeroContent(): Promise<any>;
+  getAboutContent(): Promise<any>;
+  getPassionsContent(): Promise<any>;
+  getContactContent(): Promise<any>;
+  getProjectsFromMarkdown(): Promise<Project[]>;
+  getTimelineFromMarkdown(): Promise<TimelineItem[]>;
+  getTestimonialsFromMarkdown(): Promise<Testimonial[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -218,6 +228,88 @@ export class MemStorage implements IStorage {
     const contact: Contact = { ...insertContact, id, createdAt: new Date() };
     this.contacts.set(id, contact);
     return contact;
+  }
+
+  // Content methods for markdown-based content
+  async getHeroContent(): Promise<any> {
+    const heroContent = await readMarkdownFile('content/hero.md');
+    return heroContent?.data || {};
+  }
+
+  async getAboutContent(): Promise<any> {
+    const aboutContent = await readMarkdownFile('content/about.md');
+    return aboutContent?.data || {};
+  }
+
+  async getPassionsContent(): Promise<any> {
+    const passionsContent = await readMarkdownFile('content/passions.md');
+    return passionsContent?.data || {};
+  }
+
+  async getContactContent(): Promise<any> {
+    const contactContent = await readMarkdownFile('content/contact.md');
+    return contactContent?.data || {};
+  }
+
+  async getProjectsFromMarkdown(): Promise<Project[]> {
+    const projectContents = await readMarkdownDirectory('content/projects');
+    
+    return projectContents.map((content, index) => {
+      const { data, html } = content;
+      const filename = `project-${index + 1}`;
+      
+      return {
+        id: extractProjectId(filename),
+        title: data.title || "",
+        description: data.description || "",
+        fullDescription: html || "",
+        status: data.status === "Launched" ? "launched" : 
+               data.status === "In Progress" ? "in-progress" : "ideas",
+        progress: data.progress || 0,
+        technologies: data.tools || [],
+        imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+        liveUrl: data.demo_link || null,
+        githubUrl: data.github_link || null,
+        features: [],
+        impact: data.impact ? { "result": data.impact } : null,
+        createdAt: new Date(),
+      } as Project;
+    });
+  }
+
+  async getTimelineFromMarkdown(): Promise<TimelineItem[]> {
+    const timelineContent = await readMarkdownFile('content/timeline.md');
+    if (!timelineContent || !timelineContent.data.items) {
+      return [];
+    }
+
+    return timelineContent.data.items.map((item: any, index: number) => ({
+      id: (index + 1).toString(),
+      title: item.title,
+      company: item.company,
+      period: item.period,
+      description: item.description,
+      skills: [],
+      order: index + 1,
+      createdAt: new Date(),
+    }));
+  }
+
+  async getTestimonialsFromMarkdown(): Promise<Testimonial[]> {
+    const testimonialsContent = await readMarkdownFile('content/testimonials.md');
+    if (!testimonialsContent || !testimonialsContent.data.testimonials) {
+      return [];
+    }
+
+    return testimonialsContent.data.testimonials.map((testimonial: any, index: number) => ({
+      id: (index + 1).toString(),
+      name: testimonial.author,
+      role: testimonial.role,
+      company: testimonial.company || null,
+      quote: testimonial.quote,
+      imageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200",
+      createdAt: new Date(),
+    }));
   }
 }
 
