@@ -41,7 +41,7 @@ export default function AdminPage() {
   }
 
   const handleGetUploadParameters = async () => {
-    const response = await apiRequest("/api/objects/upload", "POST") as { uploadURL: string };
+    const response = await apiRequest("/api/objects/upload", "POST") as any;
     return {
       method: "PUT" as const,
       url: response.uploadURL,
@@ -76,7 +76,7 @@ export default function AdminPage() {
               {user && (
                 <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
                   <User className="w-4 h-4" />
-                  <span>{(user as any)?.firstName || 'User'} {(user as any)?.lastName || ''}</span>
+                  <span>{String((user as any)?.firstName || 'User')} {String((user as any)?.lastName || '')}</span>
                 </div>
               )}
             </div>
